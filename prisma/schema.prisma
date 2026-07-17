@@ -19,10 +19,13 @@ model Exercise {
 
 model Routine {
   id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   nombre      String
   plan        Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  routineProgresses  RoutineProgress[]
 }
 
 model User {
@@ -41,6 +44,7 @@ model User {
   objetivo      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  routines      Routine[]
   workoutLogs   WorkoutLog[]
   routineProgresses RoutineProgress[]
 }
@@ -63,11 +67,7 @@ model RoutineProgress {
   userId             String
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   routineId          String
-  // Routine doesn't have User relation yet, so we just use routineId as string, 
-  // or relate it to Routine without adding back-relation if possible, but Prisma requires back-relation for Routine.
-  // To keep it simple and not modify Routine, we can just use routineId as a regular String without foreign key relation to Routine.
-  // But wait, it's better to relate it if Routine exists. I'll just leave it as String since Routines in DB are global for now,
-  // or they match frontend UUIDs.
+  routine            Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
   completedExercises Json?
   dayComments        Json?
   createdAt          DateTime @default(now())
