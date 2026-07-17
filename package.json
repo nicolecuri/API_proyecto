@@ -13,6 +13,9 @@
     "vercel-build": "prisma generate && prisma migrate deploy",
     "postinstall": "prisma generate"
   },
+  "prisma": {
+      "seed": "node prisma/seed.js"
+  },
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "cors": "^2.8.5",
@@ -21,4 +24,5 @@
     "prisma": "^5.22.0",
     "serverless-http": "^3.0.3"
   }
+  
 }
