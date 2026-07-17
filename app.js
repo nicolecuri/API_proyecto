@@ -20,6 +20,10 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, message: 'API funcionando' })
 })
 
+app.get('/', (_req, res) => {
+  res.send('¡El Backend de FitPlanner está corriendo perfectamente! 🚀')
+})
+
 app.use('/api/exercises', exerciseRoutes)
 app.use('/api/routines', routineRoutes)
 app.use('/api/users', userRoutes)
