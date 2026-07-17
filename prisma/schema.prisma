@@ -40,6 +40,39 @@ model User {
   objetivo      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  workoutLogs   WorkoutLog[]
+  routineProgresses RoutineProgress[]
+}
+
+model WorkoutLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String   // "YYYY-MM-DD"
+  exercises Json     // Estado de cada ejercicio en ese día
+  history   Json?    // Resumen diario (intensidad, tiempo, musculos)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+}
+
+model RoutineProgress {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routineId          String
+  // Routine doesn't have User relation yet, so we just use routineId as string, 
+  // or relate it to Routine without adding back-relation if possible, but Prisma requires back-relation for Routine.
+  // To keep it simple and not modify Routine, we can just use routineId as a regular String without foreign key relation to Routine.
+  // But wait, it's better to relate it if Routine exists. I'll just leave it as String since Routines in DB are global for now,
+  // or they match frontend UUIDs.
+  completedExercises Json?
+  dayComments        Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  @@unique([userId, routineId])
 }
 
 model Tracking {
