@@ -16,6 +16,10 @@ const app = express()
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }))
 app.use(express.json())
 
+app.get('/', (_req, res) => {
+  res.json({ ok: true, message: 'API de FitPlanner funcionando correctamente. Visita /health para revisar el estado.' })
+})
+
 app.get('/health', (_req, res) => {
   res.json({ ok: true, message: 'API funcionando' })
 })

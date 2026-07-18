@@ -14,6 +14,25 @@ export async function createExercise(data) {
   })
 }
 
+export async function getExerciseById(id) {
+  return prisma.exercise.findUnique({ where: { id } })
+}
+
+export async function updateExercise(id, data) {
+  return prisma.exercise.update({
+    where: { id },
+    data: {
+      nombre: data.nombre,
+      grupoMuscularPrincipal: data.grupoMuscularPrincipal,
+      gruposSecundarios: data.gruposSecundarios,
+    },
+  })
+}
+
+export async function deleteExercise(id) {
+  return prisma.exercise.delete({ where: { id } })
+}
+
 export async function seedExercises() {
   const existing = await prisma.exercise.count()
   if (existing > 0) return
