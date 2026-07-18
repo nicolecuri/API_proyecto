@@ -21,9 +21,16 @@ function deepMerge(target, source) {
 export async function upsertTracking(userId, date, data) {
   const existing = await prisma.tracking.findFirst({ where: { userId, date } })
   if (existing) {
-    const mergedData = typeof existing.data === 'object' && existing.data !== null 
-      ? deepMerge(existing.data, data)
-      : data;
+    // Para entradas de rutina (routine-*), reemplazar completamente
+    // porque el frontend siempre envía el estado completo incluyendo borrados.
+    // Para entradas diarias (fechas), hacer merge porque exercises y history
+    // se guardan por separado desde diferentes partes del frontend.
+    const isRoutineEntry = date.startsWith('routine-')
+    const mergedData = isRoutineEntry
+      ? data
+      : (typeof existing.data === 'object' && existing.data !== null 
+          ? deepMerge(existing.data, data)
+          : data);
     return prisma.tracking.update({ where: { id: existing.id }, data: { data: mergedData } })
   }
   return prisma.tracking.create({ data: { userId, date, data } })
