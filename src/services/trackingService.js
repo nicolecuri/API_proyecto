@@ -7,7 +7,10 @@ export async function getTrackingForUserDate(userId, date) {
 export async function upsertTracking(userId, date, data) {
   const existing = await prisma.tracking.findFirst({ where: { userId, date } })
   if (existing) {
-    return prisma.tracking.update({ where: { id: existing.id }, data: { data } })
+    const mergedData = typeof existing.data === 'object' && existing.data !== null 
+      ? { ...existing.data, ...data } 
+      : data;
+    return prisma.tracking.update({ where: { id: existing.id }, data: { data: mergedData } })
   }
   return prisma.tracking.create({ data: { userId, date, data } })
 }
